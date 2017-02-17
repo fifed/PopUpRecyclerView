@@ -8,6 +8,7 @@ import android.support.annotation.Nullable;
 import android.support.v7.widget.CardView;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
+import android.util.TypedValue;
 import android.view.KeyEvent;
 import android.view.MotionEvent;
 import android.view.View;
@@ -21,6 +22,7 @@ public class PopUpRecyclerView extends FrameLayout implements PopupWindow.OnDism
     private boolean isDroppedDown;
     private boolean isOverKeyboard;
     private boolean isAutoOpenOnTouch = true;
+    private int offset;
     private RecyclerView rv;
     private CardView dropDownContainer;
     private PopupWindow popupWindow;
@@ -46,7 +48,7 @@ public class PopUpRecyclerView extends FrameLayout implements PopupWindow.OnDism
     protected void onFinishInflate() {
         super.onFinishInflate();
         if(getChildCount() != 1){
-            throw new RuntimeException("DropDownRecyclerView must contain one child!");
+            throw new RuntimeException("PopUpRecyclerView must contain one child!");
         }
         initView();
     }
@@ -82,7 +84,7 @@ public class PopUpRecyclerView extends FrameLayout implements PopupWindow.OnDism
         if(!isDroppedDown){
             popupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
             popupWindow.setWidth(getMeasuredWidth());
-            popupWindow.showAsDropDown(this);
+            popupWindow.showAsDropDown(this, 0, offset);
             isDroppedDown = true;
             if(listener != null){
                 listener.onRecyclerViewShow();;
@@ -116,6 +118,10 @@ public class PopUpRecyclerView extends FrameLayout implements PopupWindow.OnDism
         }
     }
 
+    public void setVerticalOffset(int offsetInDp){
+        offset = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, offsetInDp, getResources().getDisplayMetrics());
+    }
+
     public void enabledAutoOpenOnTouch(boolean enabled){
         isAutoOpenOnTouch = enabled;
     }
@@ -135,7 +141,7 @@ public class PopUpRecyclerView extends FrameLayout implements PopupWindow.OnDism
         }
     }
 
-        @Override
+    @Override
     public boolean onTouch(View v, MotionEvent event) {
         if(v == this){
             if(event.getAction() == MotionEvent.ACTION_DOWN && !isDroppedDown && isAutoOpenOnTouch){
@@ -147,10 +153,10 @@ public class PopUpRecyclerView extends FrameLayout implements PopupWindow.OnDism
             if (x > 0 && x <= getMeasuredWidth() && y < 0 && y >= -getMeasuredHeight()) {
                 return true;
             } else if(x == 0 && y == 0){
-                    popupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
-                    popupWindow.update();
-                    isOverKeyboard = false;
-                    return true;
+                popupWindow.setInputMethodMode(PopupWindow.INPUT_METHOD_NEEDED);
+                popupWindow.update();
+                isOverKeyboard = false;
+                return true;
             }
         }
         return false;
