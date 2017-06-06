@@ -108,7 +108,9 @@ public class PopUpRecyclerView extends FrameLayout implements PopupWindow.OnDism
 
     public void dropDownRecyclerView(){
         if(!isDroppedDown){
-            showRV();
+            if(rv != null && rv.getAdapter().getItemCount() > 0) {
+                showRV();
+            }
         }
     }
 
@@ -145,7 +147,9 @@ public class PopUpRecyclerView extends FrameLayout implements PopupWindow.OnDism
     public boolean onTouch(View v, MotionEvent event) {
         if(v == this){
             if(event.getAction() == MotionEvent.ACTION_DOWN && !isDroppedDown && isAutoOpenOnTouch){
-                showRV();
+                if(rv != null && rv.getAdapter().getItemCount() > 0) {
+                    showRV();
+                }
             }
         } else if(event.getAction() == MotionEvent.ACTION_OUTSIDE && isDroppedDown) {
             int x = (int) event.getX();
