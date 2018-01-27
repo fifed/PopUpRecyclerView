@@ -120,6 +120,12 @@ public class PopUpRecyclerView extends FrameLayout implements PopupWindow.OnDism
         }
     }
 
+    public void update(){
+        if (popupWindow != null){
+            popupWindow.update();
+        }
+    }
+
     public void setVerticalOffset(int offsetInDp){
         offset = (int) TypedValue.applyDimension(TypedValue.COMPLEX_UNIT_DIP, offsetInDp, getResources().getDisplayMetrics());
     }
